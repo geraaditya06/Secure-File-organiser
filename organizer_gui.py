@@ -42,9 +42,7 @@ VERIFY_SCRIPT = BASE_DIR / "verify_integrity.sh"
 # Poll interval for log viewer (ms)
 LOG_POLL_MS = 2000
 
-# ===========================
 # Helper: run subprocess and stream output to a queue
-# ===========================
 def run_process(cmd_list, out_queue):
     """
     Runs subprocess and pushes output lines to out_queue.
@@ -72,10 +70,7 @@ def run_process(cmd_list, out_queue):
     except Exception as e:
         out_queue.put(f"[ERROR] Running command failed: {e}\n")
         return 1
-
-# ===========================
 # GUI App
-# ===========================
 class OrganizerApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -118,9 +113,7 @@ class OrganizerApp(tk.Tk):
         self.out_queue = queue.Queue()
         self.proc_thread = None
 
-    # -------------------------
     # Organizer Tab
-    # -------------------------
     def build_organizer_tab(self):
         frm = self.tab_organize
 
@@ -169,9 +162,7 @@ class OrganizerApp(tk.Tk):
         ybar.pack(side=tk.RIGHT, fill=tk.Y)
         self.text_out.configure(yscrollcommand=ybar.set)
 
-    # -------------------------
     # Integrity Tab
-    # -------------------------
     def build_integrity_tab(self):
         frm = self.tab_integrity
         topfrm = ttk.Frame(frm)
@@ -207,9 +198,7 @@ class OrganizerApp(tk.Tk):
         ybar.pack(side=tk.RIGHT, fill=tk.Y)
         self.text_verify.configure(yscrollcommand=ybar.set)
 
-    # -------------------------
     # Backups Tab
-    # -------------------------
     def build_backups_tab(self):
         frm = self.tab_backups
         topfrm = ttk.Frame(frm)
@@ -233,10 +222,7 @@ class OrganizerApp(tk.Tk):
         ybar = ttk.Scrollbar(listfrm, orient=tk.VERTICAL, command=self.backups_list.yview)
         ybar.pack(side=tk.RIGHT, fill=tk.Y)
         self.backups_list.configure(yscrollcommand=ybar.set)
-
-    # -------------------------
     # Logs Tab
-    # -------------------------
     def build_logs_tab(self):
         frm = self.tab_logs
         topfrm = ttk.Frame(frm)
@@ -265,9 +251,7 @@ class OrganizerApp(tk.Tk):
         self._live_logs_running = False
         self._live_log_paths = []
 
-    # -------------------------
     # Browse helpers
-    # -------------------------
     def browse_source(self):
         p = filedialog.askdirectory(title="Select Source Folder")
         if p:
@@ -307,9 +291,7 @@ class OrganizerApp(tk.Tk):
         if p:
             self.log_dir_var.set(p)
 
-    # -------------------------
     # Run Organizer
-    # -------------------------
     def run_organizer(self):
         src = self.src_var.get().strip()
         out = self.out_var.get().strip()
@@ -344,10 +326,7 @@ class OrganizerApp(tk.Tk):
         else:
             self.status_var.set("Organizer finished with errors")
             messagebox.showwarning("Completed with errors", f"Organizer returned code {returncode}. Check logs.")
-
-    # -------------------------
     # Run Integrity
-    # -------------------------
     def run_integrity(self):
         d = self.verify_dir_var.get().strip()
         if not d:
@@ -376,10 +355,7 @@ class OrganizerApp(tk.Tk):
         else:
             self.integrity_status.set("Integrity FAILED")
             messagebox.showwarning("Integrity", "Some files failed verification. Check logs.")
-
-    # -------------------------
     # Background runner & stream
-    # -------------------------
     def _background_run_and_stream(self, cmd, text_widget, on_complete_cb):
         q = queue.Queue()
         def worker():
@@ -412,15 +388,11 @@ class OrganizerApp(tk.Tk):
                 self.after(100, poll)
         self.after(100, poll)
 
-    # -------------------------
     # Clear output
-    # -------------------------
     def clear_output_text(self):
         self.text_out.delete("1.0", tk.END)
 
-    # -------------------------
     # Open checksum log
-    # -------------------------
     def open_checksum_log(self):
         d = self.verify_dir_var.get().strip()
         if not d:
@@ -435,10 +407,7 @@ class OrganizerApp(tk.Tk):
             os.startfile(chk)
         else:
             subprocess.Popen(["xdg-open", chk])
-
-    # -------------------------
     # Backups list & restore
-    # -------------------------
     def refresh_backups(self):
         d = self.back_dir_var.get().strip()
         self.backups_list.delete(0, tk.END)
@@ -480,10 +449,7 @@ class OrganizerApp(tk.Tk):
             messagebox.showinfo("Restored", f"Backup restored into {dest}")
         except Exception as e:
             messagebox.showerror("Restore failed", f"Failed to restore: {e}")
-
-    # -------------------------
     # Live logs
-    # -------------------------
     def start_live_logs(self):
         d = self.log_dir_var.get().strip()
         if not d:
@@ -529,10 +495,7 @@ class OrganizerApp(tk.Tk):
 
     def clear_log_view(self):
         self.text_logs.delete("1.0", tk.END)
-
-# ===========================
 # Entry point
-# ===========================
 def main():
     # quick checks
     if not ORGANIZE_SCRIPT.exists():
